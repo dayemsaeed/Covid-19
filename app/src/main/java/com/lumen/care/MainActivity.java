@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -93,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     assert json != null;
                     covidData = json.getJSONArray("data");
+                    ArrayList<Object> list = new ArrayList<>();
+                    for (int i = 0; i < covidData.length(); i++) {
+                        list.add(covidData.get(i));
+                    }
+                    SortJsonArray sortJsonArray = new SortJsonArray();
+                    sortJsonArray.sortArray(list, "name", true);
+                    covidData = new JSONArray();
+                    for (Object object : list) {
+                        covidData.put(object);
+                    }
                     RecyclerView recyclerView = findViewById(R.id.recyclerView2);
 
                     // use this setting to improve performance if you know that changes
@@ -102,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     // use a linear layout manager
                     LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
                     recyclerView.setLayoutManager(layoutManager);
-                    RecyclerView.Adapter mAdapter = new CustomListAdapter(covidData);
+                    RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
                     recyclerView.setAdapter(mAdapter);
 
                 } catch (JSONException e) {
@@ -163,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // specify an adapter (see also next example)
-        RecyclerView.Adapter mAdapter = new CustomListAdapter(covidData);
+        RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
         recyclerView.setAdapter(mAdapter);
 
     }

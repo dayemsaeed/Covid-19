@@ -20,7 +20,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
-        // each data item is just a string in this case
+        // each data item that we need to populate
         TextView textView;
         ListViewHolder(LinearLayout v) {
             super(v);
