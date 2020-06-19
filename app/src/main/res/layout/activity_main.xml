@@ -43,7 +43,7 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="" />
 
-            <com.google.android.material.tabs.TabLayout
+            <!--<com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/safety" />
 
-            </com.google.android.material.tabs.TabLayout>
+            </com.google.android.material.tabs.TabLayout>-->
 
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

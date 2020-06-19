@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                         list.add(covidData.get(i));
                     }
                     SortJsonArray sortJsonArray = new SortJsonArray();
-                    sortJsonArray.sortArray(list, "name", true);
+                    sortJsonArray.sortArray(list, "confirmed", false);
                     covidData = new JSONArray();
                     for (Object object : list) {
                         covidData.put(object);

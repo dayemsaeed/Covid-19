@@ -23,18 +23,32 @@ class SortJsonArray {
                 String val2 = "";
 
                 try {
-                    val1 = (String) o1.get(KEY_NAME);
-                    val2 = (String) o2.get(KEY_NAME);
+                    if (KEY_NAME.equals("confirmed") || KEY_NAME.equals("deaths")|| KEY_NAME.equals("recovered") || KEY_NAME.equals("critical")) {
+                        o1 = o1.getJSONObject("latest_data");
+                        o2 = o2.getJSONObject("latest_data");
+                    }
+                    val1 = String.valueOf(o1.get(KEY_NAME));
+                    val2 = String.valueOf(o2.get(KEY_NAME));
                 } catch (Exception e) {
                     Log.e("Sort Exception", "Issue when sorting JSONArray", e);
                     e.printStackTrace();
                 }
 
-                if (ascending) {
-                    return val1.compareToIgnoreCase(val2);
+                if (IntCheckHelper.isInteger(val1)) {
+                    if (ascending) {
+                        return Integer.valueOf(val1).compareTo(Integer.valueOf(val2));
+                    }
+                    else {
+                        return Integer.valueOf(val2).compareTo(Integer.valueOf(val1));
+                    }
                 }
                 else {
-                    return val2.compareToIgnoreCase(val1);
+                    if (ascending) {
+                        return val1.compareToIgnoreCase(val2);
+                    }
+                    else {
+                        return val2.compareToIgnoreCase(val1);
+                    }
                 }
 
             }

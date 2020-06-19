@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +23,11 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
 
         // each data item that we need to populate
         TextView textView;
+        TextView stats;
         ListViewHolder(LinearLayout v) {
             super(v);
-            textView = v.findViewById(R.id.info_text);
+            textView = v.findViewById(R.id.name);
+            stats = v.findViewById(R.id.cases);
         }
 
     }
@@ -55,6 +58,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
         // - replace the contents of the view with that element
         try {
             holder.textView.setText(mDataset.getJSONObject(position).getString("name"));
+            holder.stats.setText(NumberFormat.getInstance().format(mDataset.getJSONObject(position).getJSONObject("latest_data").getInt("confirmed")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
