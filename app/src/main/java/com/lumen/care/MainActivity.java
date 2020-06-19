@@ -1,15 +1,26 @@
 package com.lumen.care;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -99,12 +110,15 @@ public class MainActivity extends AppCompatActivity {
                         list.add(covidData.get(i));
                     }
                     SortJsonArray sortJsonArray = new SortJsonArray();
-                    sortJsonArray.sortArray(list, "name", true);
+                    sortJsonArray.sortArray(list, "confirmed", false);
                     covidData = new JSONArray();
                     for (Object object : list) {
                         covidData.put(object);
                     }
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+                    ViewPager2 pager = findViewById(R.id.view_pager);
+
+                    View view = getLayoutInflater().inflate(R.layout.view_page, null);
+                    RecyclerView recyclerView = view.findViewById(R.id.recyclerView2);
 
                     // use this setting to improve performance if you know that changes
                     // in content do not change the layout size of the RecyclerView
@@ -115,6 +129,33 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.setLayoutManager(layoutManager);
                     RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
                     recyclerView.setAdapter(mAdapter);
+
+                    ViewPageAdapter pageAdapter = new ViewPageAdapter(getSupportFragmentManager(), getLifecycle());
+                    pager.setAdapter(pageAdapter);
+
+                    pager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+
+                    TabLayout tabLayout = findViewById(R.id.tabLayout2);
+                    tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+                    new TabLayoutMediator(tabLayout, pager,
+                            (tab, position) -> {
+                                switch (position) {
+                                    case 0:
+                                        tab.setText("Stats");
+                                        break;
+                                    case 1:
+                                        tab.setText("News");
+                                        break;
+                                    case 2:
+                                        tab.setText("Symptoms");
+                                        break;
+                                    case 3:
+                                        tab.setText("Safety");
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }).attach();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -144,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMapReady(@NonNull MapboxMap mapboxMap) {
 
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                mapboxMap.setStyle(Style.DARK, new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
 
@@ -157,25 +198,49 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+        ViewPager2 pager = findViewById(R.id.view_pager);
+
+        View v = getLayoutInflater().inflate(R.layout.view_page, null);
+
+        /*RecyclerView recyclerView = v.findViewById(R.id.recyclerView2);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(false);
 
         // use a linear layout manager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(layoutManager);
-
-        String[] myDataset = { "Saint Pierre and Miquelon", "Bosnia and Herzegovina", "Costa Rica", "Georgia", "Sao Tome and Principe", "Montserrat", "Tokelau", "Kazakhstan",
-                "Timor-Leste", "Trinidad and Tobago", "Egypt", "Nicaragua", "Czech Republic", "Saint Helena", "Ascension and Tristan da Cunha Turkey", "Norfolk Island",
-                "French Guiana", "Fiji", "Dominican Republic", "Jordan", "Curaçao", "British Indian Ocean Territory", "Hungary", "Colombia", "Oman" };
-
-
-
-        // specify an adapter (see also next example)
         RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
-        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);*/
+
+        ViewPageAdapter pageAdapter = new ViewPageAdapter(getSupportFragmentManager(), getLifecycle());
+        pageAdapter.addFragment(new StatsFragment(), getString(R.string.stats_tab));
+        pager.setAdapter(pageAdapter);
+
+        pager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+
+        TabLayout tabLayout = findViewById(R.id.tabLayout2);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        new TabLayoutMediator(tabLayout, pager,
+                (tab, position) -> {
+                    switch (tab.getPosition()) {
+                        case 0:
+                            tab.setText("Stats");
+                            break;
+                        case 1:
+                            tab.setText("News");
+                            break;
+                        case 2:
+                            tab.setText("Symptoms");
+                            break;
+                        case 3:
+                            tab.setText("Safety");
+                            break;
+                        default:
+                            break;
+                    }
+                }).attach();
 
     }
 
