@@ -41,7 +41,7 @@
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
-                app:title="Covid-19" />
+                app:title="" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout2"
