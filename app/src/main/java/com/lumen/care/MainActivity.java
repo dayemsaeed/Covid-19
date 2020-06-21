@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         protected StringBuilder doInBackground(String... urls) {
             try {
-                URL url = new URL("https://corona-api.com/countries");
+                URL url = new URL("https://api.covid19api.com/summary");
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
                 InputStream inputStream = connection.getInputStream();
@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 try {
                     assert json != null;
-                    covidData = json.getJSONArray("data");
+                    covidData = json.getJSONArray("Countries");
                     ArrayList<Object> list = new ArrayList<>();
                     for (int i = 0; i < covidData.length(); i++) {
                         list.add(covidData.get(i));
                     }
                     SortJsonArray sortJsonArray = new SortJsonArray();
-                    sortJsonArray.sortArray(list, "confirmed", false);
+                    sortJsonArray.sortArray(list, "TotalConfirmed", false);
                     covidData = new JSONArray();
                     for (Object object : list) {
                         covidData.put(object);
