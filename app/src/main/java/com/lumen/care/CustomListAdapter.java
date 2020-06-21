@@ -61,8 +61,8 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         try {
-            holder.textView.setText(mDataset.getJSONObject(position).getString("name"));
-            holder.textView2.setText(NumberFormat.getInstance().format(mDataset.getJSONObject(position).getJSONObject("latest_data").getInt("confirmed")));
+            holder.textView.setText(mDataset.getJSONObject(position).getString("Country"));
+            holder.textView2.setText(NumberFormat.getInstance().format(mDataset.getJSONObject(position).getInt("TotalConfirmed")));
         } catch (JSONException e) {
             e.printStackTrace();
         }

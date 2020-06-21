@@ -23,10 +23,6 @@ class SortJsonArray {
                 String val2 = "";
 
                 try {
-                    if (KEY_NAME.equals("confirmed") || KEY_NAME.equals("deaths")|| KEY_NAME.equals("recovered") || KEY_NAME.equals("critical")) {
-                        o1 = o1.getJSONObject("latest_data");
-                        o2 = o2.getJSONObject("latest_data");
-                    }
                     val1 = String.valueOf(o1.get(KEY_NAME));
                     val2 = String.valueOf(o2.get(KEY_NAME));
                 } catch (Exception e) {
