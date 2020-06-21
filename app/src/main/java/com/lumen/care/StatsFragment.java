@@ -27,7 +27,7 @@ public class StatsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.view_page, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
+        recyclerView = view.findViewById(R.id.recyclerView2);
 
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
