@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     ViewPager2 pager = findViewById(R.id.view_pager);
 
-                    View view = getLayoutInflater().inflate(R.layout.view_page, null);
-                    pageAdapter.addFragment(new StatsFragment(), getString(R.string.stats_tab));
+                    /*View view = getLayoutInflater().inflate(R.layout.view_page, null);
+                    pageAdapter.addFragment(new StatsFragment(), getString(R.string.stats_tab));*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
