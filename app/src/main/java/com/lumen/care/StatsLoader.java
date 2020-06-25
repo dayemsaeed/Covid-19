@@ -1,51 +1,47 @@
 package com.lumen.care;
 
-import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.loader.content.AsyncTaskLoader;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import javax.net.ssl.HttpsURLConnection;
 
-public class StatsLoader extends AsyncTaskLoader<StringBuilder> {
+public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
 
     Exception exception;
     String urlString = "";
     static JSONArray covidData = new JSONArray();
+    ViewPageAdapter pageAdapter;
     ViewPager2 viewPager2;
 
-    public StatsLoader(@NonNull Context context, String url, ViewPager2 v) {
-        super(context);
+    public StatsLoader(String url, ViewPageAdapter adapter, ViewPager2 pager) {
+        super();
         urlString = url;
-        viewPager2 = v;
+        pageAdapter = adapter;
+        viewPager2 = pager;
     }
 
     @Nullable
     @Override
-    public StringBuilder loadInBackground() {
-        HttpURLConnection connection = null;
+    public JSONArray doInBackground(String ... urls) {
+        HttpsURLConnection connection = null;
         BufferedReader reader = null;
 
         try {
 
             URL url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
             connection.connect();
             InputStream inputStream = connection.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -57,14 +53,27 @@ public class StatsLoader extends AsyncTaskLoader<StringBuilder> {
                 buffer.append(line);
             }
 
-            return buffer;
+            JSONObject json = new JSONObject(buffer.toString());
+            covidData = json.getJSONArray("Countries");
+            ArrayList<Object> list = new ArrayList<>();
+            for (int i = 0; i < covidData.length(); i++) {
+                list.add(covidData.get(i));
+            }
+            SortJsonArray sortJsonArray = new SortJsonArray();
+            sortJsonArray.sortArray(list, "TotalConfirmed", false);
+            covidData = new JSONArray();
+            for (Object object : list) {
+                covidData.put(object);
+            }
+            return covidData;
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        finally {
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
             if (connection != null) {
                 connection.disconnect();
             }
@@ -78,52 +87,17 @@ public class StatsLoader extends AsyncTaskLoader<StringBuilder> {
         }
 
         return null;
-
     }
 
-    @Override
-    public void deliverResult(@Nullable StringBuilder data) {
-        super.deliverResult(data);
-        if (exception == null) {
+    protected void onPostExecute(JSONArray coviddata) {
+
+        if (this.exception == null) {
             Log.d("Check", "Works!");
-            JSONObject json = null;
-            try {
-                assert data != null;
-                json = new JSONObject(data.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                assert json != null;
-                covidData = json.getJSONArray("Countries");
-                ArrayList<Object> list = new ArrayList<>();
-                for (int i = 0; i < covidData.length(); i++) {
-                    list.add(covidData.get(i));
-                }
-                SortJsonArray sortJsonArray = new SortJsonArray();
-                sortJsonArray.sortArray(list, "TotalConfirmed", false);
-                covidData = new JSONArray();
-                for (Object object : list) {
-                    covidData.put(object);
-                }
-                ViewPager2 pager = findViewById(R.id.view_pager);
-
-                /*View view = getLayoutInflater().inflate(R.layout.view_page, null);
-                pageAdapter.addFragment(new StatsFragment(), getString(R.string.stats_tab));*/
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+            pageAdapter.addFragment(new StatsFragment(coviddata), "Stats");
+            viewPager2.setAdapter(pageAdapter);
         }
-    }
 
-    @Override
-    protected void onStartLoading() {
-        super.onStartLoading();
-        forceLoad();
     }
-
 
 
 }

@@ -12,10 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Map;
 
 public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.ListViewHolder> {
 

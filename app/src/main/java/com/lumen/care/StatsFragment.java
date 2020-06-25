@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.json.JSONArray;
 
 public class StatsFragment extends Fragment {
@@ -19,8 +18,8 @@ public class StatsFragment extends Fragment {
     RecyclerView recyclerView;
     JSONArray covidData;
 
-    public StatsFragment() {
-
+    public StatsFragment(JSONArray data) {
+        covidData = data;
     }
 
     @Nullable
@@ -28,12 +27,8 @@ public class StatsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.view_page, container, false);
         recyclerView = view.findViewById(R.id.recyclerView2);
-
-        // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(false);
         RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
         recyclerView.setAdapter(mAdapter);
