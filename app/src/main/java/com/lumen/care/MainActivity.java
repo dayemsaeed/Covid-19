@@ -2,129 +2,17 @@ package com.lumen.care;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.AsyncTask;
+import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
-    private static JSONArray covidData = new JSONArray();
-
-    class RetrieveFeedTask extends AsyncTask<String, Void, StringBuilder> {
-
-        private Exception exception;
-        private HttpURLConnection connection = null;
-        BufferedReader reader = null;
-
-        protected StringBuilder doInBackground(String... urls) {
-            try {
-                URL url = new URL("https://corona-api.com/countries");
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream inputStream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                StringBuilder buffer = new StringBuilder();
-                String line = "";
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                return buffer;
-
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-
-        }
-
-        protected void onPostExecute(StringBuilder data) {
-            // TODO: check this.exception
-            // TODO: do something with the feed
-
-            if (exception == null) {
-                Log.d("Check", "Works!");
-                JSONObject json = null;
-                try {
-                    json = new JSONObject(data.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    assert json != null;
-                    covidData = json.getJSONArray("data");
-                    ArrayList<Object> list = new ArrayList<>();
-                    for (int i = 0; i < covidData.length(); i++) {
-                        list.add(covidData.get(i));
-                    }
-                    SortJsonArray sortJsonArray = new SortJsonArray();
-                    sortJsonArray.sortArray(list, "confirmed", false);
-                    covidData = new JSONArray();
-                    for (Object object : list) {
-                        covidData.put(object);
-                    }
-                    RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-
-                    // use this setting to improve performance if you know that changes
-                    // in content do not change the layout size of the RecyclerView
-                    recyclerView.setHasFixedSize(false);
-
-                    // use a linear layout manager
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
-                    recyclerView.setLayoutManager(layoutManager);
-                    RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
-                    recyclerView.setAdapter(mAdapter);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Couldn't fetch data, try again later.",
-                            Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,47 +23,46 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // Get data
-        new RetrieveFeedTask().execute();
-
-        mapView = (MapView) findViewById(R.id.mapView);
+        mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(@NonNull MapboxMap mapboxMap) {
+        mapView.getMapAsync(mapboxMap -> mapboxMap.setStyle(Style.DARK, style -> {
 
-                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 
 
+        }));
+
+        ViewPager2 pager = findViewById(R.id.view_pager);
+
+        ViewPageAdapter pageAdapter = new ViewPageAdapter(getSupportFragmentManager(), getLifecycle());
+        pager.setAdapter(pageAdapter);
+
+        pager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+
+        TabLayout tabLayout = findViewById(R.id.tabLayout2);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        new TabLayoutMediator(tabLayout, pager,
+                (tab, position) -> {
+                    switch (position) {
+                        case 0:
+                            tab.setText(getString(R.string.stats_tab));
+                            break;
+                        case 1:
+                            tab.setText(getString(R.string.news_tab));
+                            break;
+                        case 2:
+                            tab.setText(getString(R.string.symptoms_tab));
+                            break;
+                        case 3:
+                            tab.setText(getString(R.string.safety_tab));
+                            break;
+                        default:
+                            break;
                     }
-                });
+                }).attach();
 
-            }
-        });
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(false);
-
-        // use a linear layout manager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        String[] myDataset = { "Saint Pierre and Miquelon", "Bosnia and Herzegovina", "Costa Rica", "Georgia", "Sao Tome and Principe", "Montserrat", "Tokelau", "Kazakhstan",
-                "Timor-Leste", "Trinidad and Tobago", "Egypt", "Nicaragua", "Czech Republic", "Saint Helena", "Ascension and Tristan da Cunha Turkey", "Norfolk Island",
-                "French Guiana", "Fiji", "Dominican Republic", "Jordan", "Curaçao", "British Indian Ocean Territory", "Hungary", "Colombia", "Oman" };
-
-
-
-        // specify an adapter (see also next example)
-        RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
-        recyclerView.setAdapter(mAdapter);
+        // Get data
+        new StatsLoader("https://api.covid19api.com/summary", pageAdapter, pager).execute();
 
     }
 
@@ -206,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }

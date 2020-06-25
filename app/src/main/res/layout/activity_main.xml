@@ -40,10 +40,10 @@
                 android:gravity="top"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
                 app:title="" />
 
-            <!--<com.google.android.material.tabs.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,28 +53,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="parent">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/stats" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/news" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/symptoms" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/safety" />
-
-            </com.google.android.material.tabs.TabLayout>-->
-
+            </com.google.android.material.tabs.TabLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -85,18 +64,17 @@
         android:layout_gravity="bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView2"
-            android:layout_width="0dp"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
-            tools:listitem="@layout/list_view">
+            tools:listitem="@layout/view_page" >
 
-        </androidx.recyclerview.widget.RecyclerView>
+        </androidx.viewpager2.widget.ViewPager2>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

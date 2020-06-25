@@ -2,14 +2,8 @@
     <string name="app_name">Care</string>
     <string name="mapbox_api_key">pk.eyJ1IjoiZGF5ZW1zYWVlZCIsImEiOiJja2E2d3FyZTYwZHh5MnptdzFjcXMycTRxIn0.hpzQHB9-_OTMC1iGkkvYpw</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="stats_tab">Stats</string>
     <string name="news_tab">News</string>
     <string name="symptoms_tab">Symptoms</string>
     <string name="safety_tab">Safety</string>
-    <string name="safety">Safety</string>
-    <string name="symptoms">Symptoms</string>
-    <string name="news">News</string>
-    <string name="stats">Stats</string>
 </resources>
