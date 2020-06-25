@@ -2,6 +2,7 @@ package com.lumen.care;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,8 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.text.NumberFormat;
-import java.util.List;
-import java.util.Map;
 
 public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.ListViewHolder> {
 
@@ -23,11 +22,13 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
 
         // each data item that we need to populate
         TextView textView;
-        TextView stats;
+        TextView textView2;
+        ImageView imageView;
         ListViewHolder(LinearLayout v) {
             super(v);
             textView = v.findViewById(R.id.name);
-            stats = v.findViewById(R.id.cases);
+            textView2 = v.findViewById(R.id.cases);
+            imageView = v.findViewById(R.id.image);
         }
 
     }
@@ -58,7 +59,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
         // - replace the contents of the view with that element
         try {
             holder.textView.setText(mDataset.getJSONObject(position).getString("Country"));
-            holder.stats.setText(NumberFormat.getInstance().format(mDataset.getJSONObject(position).getInt("TotalConfirmed")));
+            holder.textView2.setText(NumberFormat.getInstance().format(mDataset.getJSONObject(position).getInt("TotalConfirmed")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
