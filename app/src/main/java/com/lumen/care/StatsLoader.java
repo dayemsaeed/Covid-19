@@ -5,6 +5,9 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,12 +27,14 @@ public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
     static JSONArray covidData = new JSONArray();
     ViewPageAdapter pageAdapter;
     ViewPager2 viewPager2;
+    TabLayout tabLayout;
 
-    public StatsLoader(String url, ViewPageAdapter adapter, ViewPager2 pager) {
+    public StatsLoader(String url, ViewPageAdapter adapter, ViewPager2 pager, TabLayout tabs) {
         super();
         urlString = url;
         pageAdapter = adapter;
         viewPager2 = pager;
+        tabLayout = tabs;
     }
 
     @Nullable
@@ -95,6 +100,25 @@ public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
             Log.d("Check", "Works!");
             pageAdapter.addFragment(new StatsFragment(coviddata), "Stats");
             viewPager2.setAdapter(pageAdapter);
+            new TabLayoutMediator(tabLayout, viewPager2,
+                    (tab, position) -> {
+                        switch (position) {
+                            case 0:
+                                tab.setText("Stats");
+                                break;
+                            case 1:
+                                tab.setText("News");
+                                break;
+                            case 2:
+                                tab.setText("Symptoms");
+                                break;
+                            case 3:
+                                tab.setText("Safety");
+                                break;
+                            default:
+                                break;
+                        }
+                    }).attach();
         }
 
     }
