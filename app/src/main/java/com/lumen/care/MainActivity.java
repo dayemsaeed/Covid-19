@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 }).attach();
 
         // Get data
-        new StatsLoader("https://api.covid19api.com/summary", pageAdapter, pager).execute();
+        new StatsLoader("https://api.covid19api.com/summary", pageAdapter, pager, tabLayout).execute();
 
     }
 
