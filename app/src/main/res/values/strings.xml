@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Care</string>
-    <string name="mapbox_api_key">pk.eyJ1IjoiZGF5ZW1zYWVlZCIsImEiOiJja2E2d3FyZTYwZHh5MnptdzFjcXMycTRxIn0.hpzQHB9-_OTMC1iGkkvYpw</string>
+    <string name="mapbox_api_key">pk.eyJ1IjoiZGF5ZW1zYWVlZCIsImEiOiJja2M0b2ZvaWcwOTM2MnlscWNvaWxyNmU3In0.yQDrRPlzaQLmjdA1YRmIyg</string>
 
     <string name="stats_tab">Stats</string>
     <string name="news_tab">News</string>
