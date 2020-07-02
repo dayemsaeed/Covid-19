@@ -17,6 +17,7 @@ import java.text.NumberFormat;
 public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.ListViewHolder> {
 
     private JSONArray mDataset;
+    private String murl;
 
     static class ListViewHolder extends RecyclerView.ViewHolder {
 
@@ -34,8 +35,9 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    CustomListAdapter(JSONArray myDataset) {
+    CustomListAdapter(JSONArray myDataset, String url) {
         mDataset = myDataset;
+        murl = url;
     }
 
     // Create new views (invoked by the layout manager)
@@ -57,9 +59,21 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
     public void onBindViewHolder(ListViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+
+        String textViewString = "";
+        String textView2String = "";
+
         try {
-            holder.textView.setText(mDataset.getJSONObject(position).getString("Country"));
-            holder.textView2.setText(NumberFormat.getInstance().format(mDataset.getJSONObject(position).getInt("TotalConfirmed")));
+            if (murl.contains("api.covid19api.com")) {
+                textViewString = mDataset.getJSONObject(position).getString("Country");
+                textView2String = NumberFormat.getInstance().format(mDataset.getJSONObject(position).getInt("TotalConfirmed"));
+            }
+            else if (murl.contains("newsapi.org")) {
+                textViewString = mDataset.getJSONObject(position).getString("title");
+                textView2String = mDataset.getJSONObject(position).getString("description");
+            }
+            holder.textView.setText(textViewString);
+            holder.textView2.setText(textView2String);
         } catch (JSONException e) {
             e.printStackTrace();
         }

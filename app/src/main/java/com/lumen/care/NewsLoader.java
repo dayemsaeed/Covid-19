@@ -4,10 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,21 +13,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
+
 import javax.net.ssl.HttpsURLConnection;
 
-public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
+public class NewsLoader extends AsyncTask<String, Void, JSONArray> {
 
     Exception exception;
     String urlString = "";
-    static JSONArray covidData = new JSONArray();
+    static JSONArray news = new JSONArray();
     ViewPageAdapter pageAdapter;
     ViewPager2 viewPager2;
     TabLayout tabLayout;
 
-    public StatsLoader(String url, ViewPageAdapter adapter, ViewPager2 pager, TabLayout tabs) {
+    public NewsLoader(String url, ViewPageAdapter adapter, ViewPager2 pager, TabLayout tabs) {
         super();
         urlString = url;
         pageAdapter = adapter;
@@ -40,13 +39,14 @@ public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
     @Nullable
     @Override
     public JSONArray doInBackground(String ... urls) {
-        HttpsURLConnection connection = null;
+        HttpURLConnection connection = null;
         BufferedReader reader = null;
 
         try {
 
             URL url = new URL(urlString);
             connection = (HttpsURLConnection) url.openConnection();
+            connection.addRequestProperty("Authorization", "Bearer baef544b7dbe4ff8b15bb502d1fd5e1a");
             connection.connect();
             InputStream inputStream = connection.getInputStream();
             reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -59,18 +59,8 @@ public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
             }
 
             JSONObject json = new JSONObject(buffer.toString());
-            covidData = json.getJSONArray("Countries");
-            ArrayList<Object> list = new ArrayList<>();
-            for (int i = 0; i < covidData.length(); i++) {
-                list.add(covidData.get(i));
-            }
-            SortJsonArray sortJsonArray = new SortJsonArray();
-            sortJsonArray.sortArray(list, "TotalConfirmed", false);
-            covidData = new JSONArray();
-            for (Object object : list) {
-                covidData.put(object);
-            }
-            return covidData;
+            news = json.getJSONArray("articles");
+            return news;
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -94,11 +84,11 @@ public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
         return null;
     }
 
-    protected void onPostExecute(JSONArray coviddata) {
+    protected void onPostExecute(JSONArray newsData) {
 
         if (this.exception == null) {
             Log.d("Check", "Works!");
-            pageAdapter.addFragment(new StatsFragment(coviddata, urlString), "Stats");
+            pageAdapter.addFragment(new NewsFragment(newsData, urlString), "News");
             viewPager2.setAdapter(pageAdapter);
             new TabLayoutMediator(tabLayout, viewPager2,
                     (tab, position) -> {
@@ -122,6 +112,4 @@ public class StatsLoader extends AsyncTask<String, Void, JSONArray> {
         }
 
     }
-
-
 }
