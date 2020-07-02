@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.Style;
@@ -41,28 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = findViewById(R.id.tabLayout2);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        new TabLayoutMediator(tabLayout, pager,
-                (tab, position) -> {
-                    switch (position) {
-                        case 0:
-                            tab.setText(getString(R.string.stats_tab));
-                            break;
-                        case 1:
-                            tab.setText(getString(R.string.news_tab));
-                            break;
-                        case 2:
-                            tab.setText(getString(R.string.symptoms_tab));
-                            break;
-                        case 3:
-                            tab.setText(getString(R.string.safety_tab));
-                            break;
-                        default:
-                            break;
-                    }
-                }).attach();
 
         // Get data
         new StatsLoader("https://api.covid19api.com/summary", pageAdapter, pager, tabLayout).execute();
+        new NewsLoader("https://newsapi.org/v2/top-headlines?q=coronavirus&sortBy=popularity", pageAdapter, pager, tabLayout).execute();
 
     }
 

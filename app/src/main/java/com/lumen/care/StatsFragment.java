@@ -17,9 +17,11 @@ public class StatsFragment extends Fragment {
     View view;
     RecyclerView recyclerView;
     JSONArray covidData;
+    String dataUrl;
 
-    public StatsFragment(JSONArray data) {
+    public StatsFragment(JSONArray data, String url) {
         covidData = data;
+        dataUrl = url;
     }
 
     @Nullable
@@ -30,8 +32,9 @@ public class StatsFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(false);
-        RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData);
+        RecyclerView.Adapter<CustomListAdapter.ListViewHolder> mAdapter = new CustomListAdapter(covidData, dataUrl);
         recyclerView.setAdapter(mAdapter);
         return view;
     }
+
 }

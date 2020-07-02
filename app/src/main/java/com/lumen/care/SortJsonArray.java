@@ -1,9 +1,7 @@
 package com.lumen.care;
 
 import android.util.Log;
-
 import org.json.JSONObject;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
