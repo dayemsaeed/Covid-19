@@ -1,6 +1,9 @@
 package com.lumen.care;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,8 +52,6 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
         LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_view, parent, false);
 
-        // TextView v = (TextView) linearLayout.findViewById(R.id.info_text);
-
         return new ListViewHolder(linearLayout);
     }
 
@@ -62,6 +63,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
 
         String textViewString = "";
         String textView2String = "";
+        String url = "";
 
         try {
             if (murl.contains("api.covid19api.com")) {
@@ -71,6 +73,16 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
             else if (murl.contains("newsapi.org")) {
                 textViewString = mDataset.getJSONObject(position).getString("title");
                 textView2String = mDataset.getJSONObject(position).getString("description");
+                url = mDataset.getJSONObject(position).getString("url");
+                String finalUrl = url;
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(finalUrl));
+                        v.getContext().startActivity(i);
+                    }
+                });
             }
             holder.textView.setText(textViewString);
             holder.textView2.setText(textView2String);
@@ -83,7 +95,7 @@ public class CustomListAdapter extends RecyclerView.Adapter<CustomListAdapter.Li
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length();
+        return  mDataset == null ? 0 : mDataset.length();
     }
 
 }
